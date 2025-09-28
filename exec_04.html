@@ -1,0 +1,1938 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="이상일ㆍ박서우">
+
+<title>불러오기와 정리하기</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="exec_04_files/libs/clipboard/clipboard.min.js"></script>
+<script src="exec_04_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="exec_04_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="exec_04_files/libs/quarto-html/popper.min.js"></script>
+<script src="exec_04_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="exec_04_files/libs/quarto-html/anchor.min.js"></script>
+<link href="exec_04_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="exec_04_files/libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="exec_04_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="exec_04_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="exec_04_files/libs/bootstrap/bootstrap-00812709c2c9f6071cd10acc43dbd527.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="exec_04_files/libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="exec_04_files/libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="exec_04_files/libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
+
+
+</head>
+
+<body class="quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#개요" id="toc-개요" class="nav-link active" data-scroll-target="#개요">개요</a></li>
+  <li><a href="#티블tibble" id="toc-티블tibble" class="nav-link" data-scroll-target="#티블tibble"><span class="header-section-number">1</span> 티블(tibble)</a>
+  <ul class="collapse">
+  <li><a href="#왜-티블인가" id="toc-왜-티블인가" class="nav-link" data-scroll-target="#왜-티블인가"><span class="header-section-number">1.1</span> 왜 티블인가?</a></li>
+  <li><a href="#티블-컬럼-유형" id="toc-티블-컬럼-유형" class="nav-link" data-scroll-target="#티블-컬럼-유형"><span class="header-section-number">1.2</span> 티블 컬럼 유형</a></li>
+  <li><a href="#티블-생성하기" id="toc-티블-생성하기" class="nav-link" data-scroll-target="#티블-생성하기"><span class="header-section-number">1.3</span> 티블 생성하기</a></li>
+  <li><a href="#유용한-티블-함수" id="toc-유용한-티블-함수" class="nav-link" data-scroll-target="#유용한-티블-함수"><span class="header-section-number">1.4</span> 유용한 티블 함수</a></li>
+  </ul></li>
+  <li><a href="#데이터-불러오기" id="toc-데이터-불러오기" class="nav-link" data-scroll-target="#데이터-불러오기"><span class="header-section-number">2</span> 데이터 불러오기</a>
+  <ul class="collapse">
+  <li><a href="#readr-패키지" id="toc-readr-패키지" class="nav-link" data-scroll-target="#readr-패키지"><span class="header-section-number">2.1</span> <strong>readr</strong> 패키지</a></li>
+  <li><a href="#엑셀-파일" id="toc-엑셀-파일" class="nav-link" data-scroll-target="#엑셀-파일"><span class="header-section-number">2.2</span> 엑셀 파일</a></li>
+  <li><a href="#데이터-쓰기" id="toc-데이터-쓰기" class="nav-link" data-scroll-target="#데이터-쓰기"><span class="header-section-number">2.3</span> 데이터 쓰기</a></li>
+  </ul></li>
+  <li><a href="#데이터-정리하기" id="toc-데이터-정리하기" class="nav-link" data-scroll-target="#데이터-정리하기"><span class="header-section-number">3</span> 데이터 정리하기</a>
+  <ul class="collapse">
+  <li><a href="#데이터-구조-변형" id="toc-데이터-구조-변형" class="nav-link" data-scroll-target="#데이터-구조-변형"><span class="header-section-number">3.1</span> 데이터 구조 변형</a></li>
+  <li><a href="#컬럼의-결합-및-분할" id="toc-컬럼의-결합-및-분할" class="nav-link" data-scroll-target="#컬럼의-결합-및-분할"><span class="header-section-number">3.2</span> 컬럼의 결합 및 분할</a></li>
+  <li><a href="#결측치na-처리" id="toc-결측치na-처리" class="nav-link" data-scroll-target="#결측치na-처리"><span class="header-section-number">3.3</span> 결측치(NA) 처리</a></li>
+  </ul></li>
+  </ul>
+</nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">불러오기와 정리하기</h1>
+</div>
+
+
+<div class="quarto-title-meta-author">
+  <div class="quarto-title-meta-heading">Author</div>
+  <div class="quarto-title-meta-heading">Affiliation</div>
+  
+    <div class="quarto-title-meta-contents">
+    <p class="author">이상일ㆍ박서우 <a href="mailto:si_lee@snu.ac.kr" class="quarto-title-author-email"><i class="bi bi-envelope"></i></a> </p>
+  </div>
+  <div class="quarto-title-meta-contents">
+        <p class="affiliation">
+            서울대학교 지리교육과
+          </p>
+      </div>
+  </div>
+
+<div class="quarto-title-meta">
+
+      
+  
+    <div>
+    <div class="quarto-title-meta-heading">Modified</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date-modified">September 28, 2025</p>
+    </div>
+  </div>
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="개요" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="개요">개요</h2>
+<p>여기서는 R로 데이터사이언스를 하는 과정 중 데이터 불러오기(importing)와 데이터 정리하기(tidying)에 집중한다. 본격적으로 해당 주제를 다루기 전에 <a href="https://www.tidyverse.org/"><strong>tidyverse</strong></a>의 공식 데이터 프레임 형식인 티블(tibble)에 대해 간단히 설명한다.</p>
+<p>우선 <a href="https://www.tidyverse.org/"><strong>tidyverse</strong></a> 패키지를 불러온다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="티블tibble" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="티블tibble"><span class="header-section-number">1</span> 티블(tibble)</h2>
+<section id="왜-티블인가" class="level3" data-number="1.1">
+<h3 data-number="1.1" class="anchored" data-anchor-id="왜-티블인가"><span class="header-section-number">1.1</span> 왜 티블인가?</h3>
+<p>데이터 프레임은 가장 널리 사용되는 데이터 형식이고, 일반적인 상황이라면 거의 대부분 데이터 프레임을 가지고 데이터사이언스를 한다. Base R은 전통적으로 <code>data.frame</code> 객체를 통해 데이터 프레임을 관리해왔다. <code>tibble</code>은 이러한 <code>data.frame</code>의 현대적 개량 버전으로 이해하면 되고, 조금의 차이는 있지만 대동소이하다. 이 새로운 데이터 프레임 형식은 <code>tidyverse</code> 패키지의 핵심 패키지 중 하나인 <a href="https://tibble.tidyverse.org/"><strong>tibble</strong></a> 패키지에서 지원된다.</p>
+</section>
+<section id="티블-컬럼-유형" class="level3" data-number="1.2">
+<h3 data-number="1.2" class="anchored" data-anchor-id="티블-컬럼-유형"><span class="header-section-number">1.2</span> 티블 컬럼 유형</h3>
+<p>한 개의 원소 이상의 어레이를 벡터라고 한다. 여기서 각 벡터가 가진 데이터의 성격을 벡터 유형(type)이라고 하고, 컬럼 유형(type) 혹은 데이터 유형이라고도 한다. 앞에서 살펴본 것처럼, 벡터는 숫자형일 수도 있고, 문자형일 수도 있다. 그러나 이러한 컬럼 유형은 훨씬 다양할 수 있다. 여기서는 <a href="https://tibble.tidyverse.org/"><strong>tibble</strong></a> 패키지가 규정하는 컬럼 유형에 대해 살펴본다. 자세한 내용은 <a href="https://tibble.tidyverse.org/articles/types.html">여기</a>를 참조할 수 있다.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>클래스</th>
+<th>데이터 유형</th>
+<th>예시</th>
+<th>기호</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>원자(atomic) 벡터</td>
+<td>논리형(logical)</td>
+<td><code>TRUE</code></td>
+<td>lgl</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>정수형(integer)</td>
+<td><code>1L</code></td>
+<td>int</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>실수형(double)</td>
+<td><code>1.5</code></td>
+<td>dbl</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>문자형(character)</td>
+<td><code>"A"</code></td>
+<td>chr</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>복소수형(complex)</td>
+<td><code>0+1i</code></td>
+<td>cpl</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>원시형(raw)</td>
+<td><code>as.raw(1)</code></td>
+<td>raw</td>
+</tr>
+<tr class="odd">
+<td>리스트(list) 벡터</td>
+<td>리스트(list)</td>
+<td><code>list(1)</code></td>
+<td>list</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>명명 리스트(named list)</td>
+<td><code>list(a = 1)</code></td>
+<td>named list</td>
+</tr>
+<tr class="odd">
+<td>빌트인 객체</td>
+<td>범주형(factor)</td>
+<td><code>factor("A")</code></td>
+<td>fct</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>순서형(ordered)</td>
+<td><code>ordered("a")</code></td>
+<td>ord</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>날짜형(Date)</td>
+<td><code>Sys.Date()</code></td>
+<td>date</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>날짜시간형(POSIXt)</td>
+<td><code>Sys.time()</code></td>
+<td>dttm</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>시간차이형(difftime)</td>
+<td><code>vctrs::new_duration(1)</code></td>
+<td>drtn</td>
+</tr>
+<tr class="even">
+<td>데이터 프레임</td>
+<td>데이터 프레임(data.frame)</td>
+<td><code>data.frame(a = 1)</code></td>
+<td>df[,1]</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>티블(tbl_df)</td>
+<td><code>tibble(a = 1)</code></td>
+<td>tibble[,1]</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="티블-생성하기" class="level3" data-number="1.3">
+<h3 data-number="1.3" class="anchored" data-anchor-id="티블-생성하기"><span class="header-section-number">1.3</span> 티블 생성하기</h3>
+<section id="기존-데이터를-티블-포맷으로-변환하기" class="level4" data-number="1.3.1">
+<h4 data-number="1.3.1" class="anchored" data-anchor-id="기존-데이터를-티블-포맷으로-변환하기"><span class="header-section-number">1.3.1</span> 기존 데이터를 티블 포맷으로 변환하기</h4>
+<p>Base R에 포함되어 있는 <code>iris</code>라는 데이터 프레임을 사용한다. 아래의 코드를 실행하면 <code>iris</code> 데이터가 <code>data.frame</code> 형식으로 저장되어 있음을 알 수 있다. Base R의 <code>class()</code> 함수의 쓰임새를 확인하라.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>iris <span class="sc">|&gt;</span> </span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 150
+Columns: 5
+$ Sepal.Length &lt;dbl&gt; 5.1, 4.9, 4.7, 4.6, 5.0, 5.4, 4.6, 5.0, 4.4, 4.9, 5.4, 4.…
+$ Sepal.Width  &lt;dbl&gt; 3.5, 3.0, 3.2, 3.1, 3.6, 3.9, 3.4, 3.4, 2.9, 3.1, 3.7, 3.…
+$ Petal.Length &lt;dbl&gt; 1.4, 1.4, 1.3, 1.5, 1.4, 1.7, 1.4, 1.5, 1.4, 1.5, 1.5, 1.…
+$ Petal.Width  &lt;dbl&gt; 0.2, 0.2, 0.2, 0.2, 0.2, 0.4, 0.3, 0.2, 0.2, 0.1, 0.2, 0.…
+$ Species      &lt;fct&gt; setosa, setosa, setosa, setosa, setosa, setosa, setosa, s…</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(iris)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "data.frame"</code></pre>
+</div>
+</div>
+<p><code>as_tibble()</code> 함수를 이용하여 <code>tibble</code> 객체로 전환한다. 그러면 <code>data.frame</code> 객체가 <code>tibble</code> 객체로 전환된 것을 알 수 있다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>iris_tbl <span class="ot">&lt;-</span> iris <span class="sc">|&gt;</span> </span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tibble</span>() </span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(iris_tbl)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "tbl_df"     "tbl"        "data.frame"</code></pre>
+</div>
+</div>
+<p>아래와 같이 데이터를 열어보면, <code>data.frame</code> 객체에서는 볼 수 없는 정보가 나타난다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>iris_tbl</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 150 × 5
+   Sepal.Length Sepal.Width Petal.Length Petal.Width Species
+          &lt;dbl&gt;       &lt;dbl&gt;        &lt;dbl&gt;       &lt;dbl&gt; &lt;fct&gt;  
+ 1          5.1         3.5          1.4         0.2 setosa 
+ 2          4.9         3            1.4         0.2 setosa 
+ 3          4.7         3.2          1.3         0.2 setosa 
+ 4          4.6         3.1          1.5         0.2 setosa 
+ 5          5           3.6          1.4         0.2 setosa 
+ 6          5.4         3.9          1.7         0.4 setosa 
+ 7          4.6         3.4          1.4         0.3 setosa 
+ 8          5           3.4          1.5         0.2 setosa 
+ 9          4.4         2.9          1.4         0.2 setosa 
+10          4.9         3.1          1.5         0.1 setosa 
+# ℹ 140 more rows</code></pre>
+</div>
+</div>
+<p>행이 150개이고 열이 5개라는 사실이 가장 위에 나타나 있고, 앞의 네개 컬럼의 데이터 유형은 실수형(dbl)이고 마지막 컬럼은 범주형(fct)라는 것을 알 수 있다.</p>
+</section>
+<section id="티블-객체를-직접-생성하기" class="level4" data-number="1.3.2">
+<h4 data-number="1.3.2" class="anchored" data-anchor-id="티블-객체를-직접-생성하기"><span class="header-section-number">1.3.2</span> 티블 객체를 직접 생성하기</h4>
+<p><code>tibble</code> 객체를 직접 생성하는 방식은 두 가지로 나뉜다.</p>
+<ul>
+<li><p>열-단위 방식(보다 일반적): 우선 열-벡터를 만들고 그것을 결합해 최종적인 <code>tibble</code> 객체를 만든다. <code>tibble()</code> 함수를 이용한다.</p></li>
+<li><p>행-단위 방식: 우선 행-벡터를 만들고 그것을 결합해 최종적인 <code>tibble</code> 객체를 만든다. <code>tribble()</code> 함수를 이용한다. <code>tribble</code>은 전치티블(<strong>tr</strong>ansposed t<strong>ibble</strong>)의 약자이다.</p></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">5</span>), </span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> <span class="fu">c</span>(<span class="st">"h"</span>, <span class="st">"m"</span>, <span class="st">"g"</span>),</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">z =</span> <span class="fu">c</span>(<span class="fl">0.08</span>, <span class="fl">0.83</span>, <span class="fl">0.60</span>)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 3
+      x y         z
+  &lt;dbl&gt; &lt;chr&gt; &lt;dbl&gt;
+1     1 h      0.08
+2     2 m      0.83
+3     5 g      0.6 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tribble</span>(</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>x, <span class="sc">~</span>y, <span class="sc">~</span>z,</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="dv">1</span>, <span class="st">"h"</span>, <span class="fl">0.08</span>,</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2</span>, <span class="st">"m"</span>, <span class="fl">0.83</span>,</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="dv">5</span>, <span class="st">"g"</span>, <span class="fl">0.60</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 3
+      x y         z
+  &lt;dbl&gt; &lt;chr&gt; &lt;dbl&gt;
+1     1 h      0.08
+2     2 m      0.83
+3     5 g      0.6 </code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="열-단위와 행-단위">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+열-단위와 행-단위
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">number =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>), </span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">name =</span> <span class="fu">c</span>(<span class="st">"seowoo"</span>, <span class="st">"ha-eun"</span>, <span class="st">"wuhyung"</span>),</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">score =</span> <span class="fu">c</span>(<span class="dv">70</span>, <span class="dv">83</span>, <span class="dv">79</span>)</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 3
+  number name    score
+   &lt;dbl&gt; &lt;chr&gt;   &lt;dbl&gt;
+1      1 seowoo     70
+2      2 ha-eun     83
+3      3 wuhyung    79</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tribble</span>(</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>number, <span class="sc">~</span>name, <span class="sc">~</span>score,</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="dv">1</span>, <span class="st">"seowoo"</span>, <span class="dv">70</span>,</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2</span>, <span class="st">"ha-eun"</span>, <span class="dv">83</span>,</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="dv">3</span>, <span class="st">"wuhyung"</span>, <span class="dv">79</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 3
+  number name    score
+   &lt;dbl&gt; &lt;chr&gt;   &lt;dbl&gt;
+1      1 seowoo     70
+2      2 ha-eun     83
+3      3 wuhyung    79</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="유용한-티블-함수" class="level3" data-number="1.4">
+<h3 data-number="1.4" class="anchored" data-anchor-id="유용한-티블-함수"><span class="header-section-number">1.4</span> 유용한 티블 함수</h3>
+<section id="행이름-관련-함수" class="level4" data-number="1.4.1">
+<h4 data-number="1.4.1" class="anchored" data-anchor-id="행이름-관련-함수"><span class="header-section-number">1.4.1</span> 행이름 관련 함수</h4>
+<p>행이름(row name)은 개별 행에 고유한 이름이 부여된 것으로, Base R의 <code>data.frame</code> 객체는 행이름으로 <code>row.names</code>라는 속성을 갖는다. 비롯 이것이 속성이긴 하지만 다른 컬럼 속성과는 구별되며 하나의 숨겨진 속성처럼 취급된다. 그런데 <a href="https://tibble.tidyverse.org/"><strong>tibble</strong></a> 패키지는 행이름 지정을 권장하지 않고, 행이름을 지정하는 간단한 함수도 제공하지 않는다. 타이디버스 철학은 행이름을 숨겨진 속성처럼 취급하기 보다는 하나의 명시적인 컬럼으로 취급하는 것이 더 낳다는 관점에 기반한다. 그러나 <a href="https://tibble.tidyverse.org/"><strong>tibble</strong></a> 패키지는 <code>row.names</code>를 가진 <code>data.frame</code> 객체에 적용할 수 있는 몇 가지 행이름 관련 함수를 제공한다.</p>
+<p>위에서와 동일하게 단순한 티블 객체를 생성한다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>tbl_1 <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">5</span>), </span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> <span class="fu">c</span>(<span class="st">"h"</span>, <span class="st">"m"</span>, <span class="st">"g"</span>),</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">z =</span> <span class="fu">c</span>(<span class="fl">0.08</span>, <span class="fl">0.83</span>, <span class="fl">0.60</span>)</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>행이름(row.name)를 지정한다. <code>tibble</code> 객체를 <code>data.frame</code> 객체로 전환해 베이스 R의 함수인 <code>row.names()</code>를 이용해 행이름을 지정한다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>df_1 <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(tbl_1)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">row.names</span>(df_1) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"C"</span>)</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>df_1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  x y    z
+A 1 h 0.08
+B 2 m 0.83
+C 5 g 0.60</code></pre>
+</div>
+</div>
+<p><code>remove_rownames()</code> 함수를 이용해 행이름을 제거할 수 있다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>df_1 <span class="sc">|&gt;</span> <span class="fu">remove_rownames</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  x y    z
+1 1 h 0.08
+2 2 m 0.83
+3 5 g 0.60</code></pre>
+</div>
+</div>
+<p><code>rownames_to_column()</code> 함수를 이용해 행이름을 또 다른 컬럼으로 전환할 수 있다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>df_1 <span class="sc">|&gt;</span> <span class="fu">rownames_to_column</span>(<span class="st">"name"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  name x y    z
+1    A 1 h 0.08
+2    B 2 m 0.83
+3    C 5 g 0.60</code></pre>
+</div>
+</div>
+<p><code>column_to_rownames()</code> 함수를 이용해 특정 컬럼을 행이름으로 전환할 수 있다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>df_1 <span class="sc">|&gt;</span> <span class="fu">rownames_to_column</span>(<span class="st">"name"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">column_to_rownames</span>(<span class="st">"name"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  x y    z
+A 1 h 0.08
+B 2 m 0.83
+C 5 g 0.60</code></pre>
+</div>
+</div>
+</section>
+<section id="행-혹은-열-삽입-함수" class="level4" data-number="1.4.2">
+<h4 data-number="1.4.2" class="anchored" data-anchor-id="행-혹은-열-삽입-함수"><span class="header-section-number">1.4.2</span> 행 혹은 열 삽입 함수</h4>
+<p>다음과 같이 한 행을 삽입한다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>tbl_1 <span class="sc">|&gt;</span> <span class="fu">add_row</span>(<span class="at">x =</span> <span class="dv">10</span>, <span class="at">y =</span> <span class="st">"u"</span>, <span class="at">z =</span> <span class="fl">0.75</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 3
+      x y         z
+  &lt;dbl&gt; &lt;chr&gt; &lt;dbl&gt;
+1     1 h      0.08
+2     2 m      0.83
+3     5 g      0.6 
+4    10 u      0.75</code></pre>
+</div>
+</div>
+<p>다음과 같은 방식으로 여러 행을 삽입할 수 있다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>tbl_1 <span class="sc">|&gt;</span> </span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_row</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">15</span>), <span class="at">y =</span> <span class="fu">c</span>(<span class="st">"u"</span>, <span class="st">"x"</span>), <span class="at">z =</span> <span class="fu">c</span>(<span class="fl">0.75</span>, <span class="fl">1.10</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 3
+      x y         z
+  &lt;dbl&gt; &lt;chr&gt; &lt;dbl&gt;
+1     1 h      0.08
+2     2 m      0.83
+3     5 g      0.6 
+4    10 u      0.75
+5    15 x      1.1 </code></pre>
+</div>
+</div>
+<p>다음과 같이 한 열을 삽입한다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>tbl_1 <span class="sc">|&gt;</span> <span class="fu">add_column</span>(<span class="at">p =</span> <span class="fu">c</span>(<span class="st">"TRUE"</span>, <span class="st">"TRUE"</span>, <span class="st">"FALSE"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 4
+      x y         z p    
+  &lt;dbl&gt; &lt;chr&gt; &lt;dbl&gt; &lt;chr&gt;
+1     1 h      0.08 TRUE 
+2     2 m      0.83 TRUE 
+3     5 g      0.6  FALSE</code></pre>
+</div>
+</div>
+<p>다음과 같은 방식으로 여러 열을 삽입할 수 있다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>tbl_1 <span class="sc">|&gt;</span> </span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_column</span>(<span class="at">p =</span> <span class="fu">c</span>(<span class="st">"TRUE"</span>, <span class="st">"TRUE"</span>, <span class="st">"FALSE"</span>), <span class="at">q =</span> <span class="fu">c</span>(<span class="dv">1</span>L, <span class="dv">2</span>L, <span class="dv">3</span>L))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 5
+      x y         z p         q
+  &lt;dbl&gt; &lt;chr&gt; &lt;dbl&gt; &lt;chr&gt; &lt;int&gt;
+1     1 h      0.08 TRUE      1
+2     2 m      0.83 TRUE      2
+3     5 g      0.6  FALSE     3</code></pre>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="데이터-불러오기" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="데이터-불러오기"><span class="header-section-number">2</span> 데이터 불러오기</h2>
+<section id="readr-패키지" class="level3" data-number="2.1">
+<h3 data-number="2.1" class="anchored" data-anchor-id="readr-패키지"><span class="header-section-number">2.1</span> <strong>readr</strong> 패키지</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="파일-형식" class="level4" data-number="2.1.1">
+<h4 data-number="2.1.1" class="anchored" data-anchor-id="파일-형식"><span class="header-section-number">2.1.1</span> 파일 형식</h4>
+<p><a href="https://readr.tidyverse.org/"><strong>readr</strong></a> 패키지는 다양한 함수를 이용해 다양한 형식의 데이터를 불러올 수 있게 도와준다.</p>
+<ul>
+<li><p><code>read_csv()</code>: 콤마분리(comma-separated values, CSV) 형식의 파일</p></li>
+<li><p><code>read_csv2()</code>: 세미콜론분리(semicolon-separated) 형식의 파일</p></li>
+<li><p><code>read_tsv()</code>: 탭구분(tab-delimited) 형식의 파일</p></li>
+<li><p><code>read_delim()</code>: 여타의 구분 형식의 파일</p></li>
+<li><p><code>read_fwf()</code>: 고정폭(fixed-width) 형식의 파일</p></li>
+<li><p><code>read_table()</code>: 공백구분 형식의 파일</p></li>
+<li><p><code>read_log()</code>: 아파치 형식(Apache-style)의 로그 파일</p></li>
+</ul>
+</section>
+<section id="컬럼-파싱-함수들" class="level4" data-number="2.1.2">
+<h4 data-number="2.1.2" class="anchored" data-anchor-id="컬럼-파싱-함수들"><span class="header-section-number">2.1.2</span> 컬럼 파싱 함수들</h4>
+<p>컬럼의 내용 중 특정한 유형의 정보만 추출하는 것을 파싱(parsing)이라고 한다. 이러한 파싱은 새로운 데이터를 읽어들이는 과정에서 파싱을 하는 경우와 기존의 벡터에서 특정 유형을 값을 추출하기 위해 파싱하는 경우의 두 가지로 나뉠 수 있는데, 데이터 유형별로 쌍둥이 함수가 존재한다.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>데이터 유형</th>
+<th>새로운 벡터 불러들이기</th>
+<th>기존 벡터에 적용하기</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>논리형(logical)</td>
+<td><code>col_logical()</code></td>
+<td><code>parse_logical()</code></td>
+</tr>
+<tr class="even">
+<td>정수형(integer)</td>
+<td><code>col_integer()</code></td>
+<td><code>parse_integer()</code></td>
+</tr>
+<tr class="odd">
+<td>실수형(double)</td>
+<td><code>col_double()</code></td>
+<td><code>parse_double()</code></td>
+</tr>
+<tr class="even">
+<td>문자형(character)</td>
+<td><code>col_character()</code></td>
+<td><code>parse_character()</code></td>
+</tr>
+<tr class="odd">
+<td>일시형(datetime)</td>
+<td><code>col_datetime()</code></td>
+<td><code>parse_datetime()</code></td>
+</tr>
+<tr class="even">
+<td>날짜형(date)</td>
+<td><code>col_date()</code></td>
+<td><code>parse_date()</code></td>
+</tr>
+<tr class="odd">
+<td>시간형(time)</td>
+<td><code>col_time()</code></td>
+<td><code>parse_time()</code></td>
+</tr>
+<tr class="even">
+<td>범주형(factor)</td>
+<td><code>col_factor()</code></td>
+<td><code>parse_factor()</code></td>
+</tr>
+<tr class="odd">
+<td>추측형(guess)</td>
+<td><code>col_guess()</code></td>
+<td><code>parse_guess()</code></td>
+</tr>
+<tr class="even">
+<td>수치형(number)</td>
+<td><code>col_number()</code></td>
+<td><code>parse_number()</code></td>
+</tr>
+</tbody>
+</table>
+<p>새로운 벡터를 위한 파싱은 데이터를 불러들이는 과정에서 컬럼 별로 미리 데이터 유형을 지정하면 여러가지로 이점이 있기 때문에 중요하다. 간단한 사례를 살펴보자.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">read_csv</span>(<span class="st">"</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="st">  logical,numeric,date,string</span></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a><span class="st">  TRUE,1,2021-01-15,abc</span></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a><span class="st">  false,4.5,2021-02-15,def</span></span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a><span class="st">  T,Inf,2021-02-16,ghi</span></span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 4
+  logical numeric date       string
+  &lt;lgl&gt;     &lt;dbl&gt; &lt;date&gt;     &lt;chr&gt; 
+1 TRUE        1   2021-01-15 abc   
+2 FALSE       4.5 2021-02-15 def   
+3 TRUE      Inf   2021-02-16 ghi   </code></pre>
+</div>
+</div>
+<p>데이터가 깔끔하게 주어진다면 데이터를 불러드리는 과정에 개별 컬럼의 유형을 지정할 필요가 없다. 그러나 현실이 이렇게 간단하지 않을 수 있고, 좀 더 복잡한 예제는 다음에서 다루도록 한다.</p>
+</section>
+<section id="read_csv-함수의-활용" class="level4" data-number="2.1.3">
+<h4 data-number="2.1.3" class="anchored" data-anchor-id="read_csv-함수의-활용"><span class="header-section-number">2.1.3</span> <code>read_csv()</code> 함수의 활용</h4>
+<p>지난번 실습에서 사용한 데이터를 면밀히 살펴본다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>students <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"https://pos.it/r4ds-students-csv"</span>)</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>students</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 5
+  `Student ID` `Full Name`      favourite.food     mealPlan            AGE  
+         &lt;dbl&gt; &lt;chr&gt;            &lt;chr&gt;              &lt;chr&gt;               &lt;chr&gt;
+1            1 Sunil Huffmann   Strawberry yoghurt Lunch only          4    
+2            2 Barclay Lynn     French fries       Lunch only          5    
+3            3 Jayendra Lyne    N/A                Breakfast and lunch 7    
+4            4 Leon Rossini     Anchovies          Lunch only          &lt;NA&gt; 
+5            5 Chidiegwu Dunkel Pizza              Breakfast and lunch five 
+6            6 Güvenç Attila    Ice cream          Lunch only          6    </code></pre>
+</div>
+</div>
+<p>다음의 몇 가지 점이 불만족스럽다.</p>
+<ul>
+<li><p>변수명: 특히 <code>Student ID</code>와 <code>Full Name</code> 변수명은 규칙에 어긋난다. 변수명 속에 공란이 있으면 좋지 않다. 이런 이름을 비구문명(non-syntactic name)이라고 하고, 백틱(` `)으로 둘러싸여 표시된다. 나중에 문제를 일으킬 수 있다.</p></li>
+<li><p>변수 형식: <code>mealPlan</code>은 문자형(chr)이 아니라 팩트형(fct)이며, <code>AGE</code>는 문자형(chr)이 아니라 수치형(dbl)이 적절하다.</p></li>
+<li><p>결측치(NA): <code>favourite.food</code>의 ’N/A’는 형식에 맞지 않아 결측치가 아니라 문자로 취급된다. 따라서 ’N/A’가 결측치임을 알려주어야 한다.</p></li>
+</ul>
+<p>이러한 점을 반영하여 csv 파일을 다시 불러오기한다. 여기서 여러 인수의 기능을 이해하는 것이 중요하다. <code>skip</code> 인수는 몇번 째 행까지를 읽지 않을 것인가를 지정한다. <code>col_names</code> 인수는 컬럼 이름을 지정한다. <code>col_types</code> 인수는 컬럼의 유형을 미리 설정하는데, 여기에 위에서 언급한 파싱 함수가 사용된다. <code>na</code> 인수는 어떤 셀 값(여기서는 “N/A”)을 결측치(NA)로 취급할 것인가를 지정한다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>students <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"https://pos.it/r4ds-students-csv"</span>, </span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">skip =</span> <span class="dv">1</span>, </span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">col_names =</span> <span class="fu">c</span>(<span class="st">"student_id"</span>, <span class="st">"full_name"</span>, <span class="st">"favorite_food"</span>, <span class="st">"meal_plan"</span>, <span class="st">"age"</span>),</span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">col_types =</span> <span class="fu">cols</span>(</span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">meal_plan =</span> <span class="fu">col_factor</span>(),</span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">age =</span> <span class="fu">col_number</span>()),</span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">na =</span> <span class="fu">c</span>(<span class="st">"N/A"</span>)</span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a>students</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 5
+  student_id full_name        favorite_food      meal_plan             age
+       &lt;dbl&gt; &lt;chr&gt;            &lt;chr&gt;              &lt;fct&gt;               &lt;dbl&gt;
+1          1 Sunil Huffmann   Strawberry yoghurt Lunch only              4
+2          2 Barclay Lynn     French fries       Lunch only              5
+3          3 Jayendra Lyne    &lt;NA&gt;               Breakfast and lunch     7
+4          4 Leon Rossini     Anchovies          Lunch only             NA
+5          5 Chidiegwu Dunkel Pizza              Breakfast and lunch    NA
+6          6 Güvenç Attila    Ice cream          Lunch only              6</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="엑셀-파일" class="level3" data-number="2.2">
+<h3 data-number="2.2" class="anchored" data-anchor-id="엑셀-파일"><span class="header-section-number">2.2</span> 엑셀 파일</h3>
+<section id="readxl-패키지" class="level4" data-number="2.2.1">
+<h4 data-number="2.2.1" class="anchored" data-anchor-id="readxl-패키지"><span class="header-section-number">2.2.1</span> readxl 패키지</h4>
+<p>가장 널리 사용되는 스프레드시트(spreadsheet) 형식인 엑셀 파일을 불러들이기 위해서는 <a href="https://readxl.tidyverse.org/"><strong>readxl</strong></a>이라는 패키지가 필요하다. <a href="https://www.tidyverse.org/"><strong>tidyverse</strong></a>의 핵심 패키지는 아니지만 일종의 친척 패키지라 할 수는 있다. <a href="https://www.tidyverse.org/"><strong>tidyverse</strong></a>에 포함되어 있지 않기 때문에 따로 인스톨하고 <code>library()</code> 함수를 통해 불러와야 한다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readxl)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>가장 널리 사용되는 명령어는 다음의 세 가지이다.</p>
+<ul>
+<li><p><code>read_xls()</code>: xls 확장자를 가진 엑셀 파일 불러오기</p></li>
+<li><p><code>read_xlsx()</code>: xlsx 확장자를 가진 엑셀 파일 불러오기</p></li>
+<li><p><code>read_excel()</code>: xls 혹은 xlsx 확장자를 가진 엑셀 파일 불러오기</p></li>
+</ul>
+</section>
+<section id="read_excel-함수의-활용" class="level4" data-number="2.2.2">
+<h4 data-number="2.2.2" class="anchored" data-anchor-id="read_excel-함수의-활용"><span class="header-section-number">2.2.2</span> <code>read_excel()</code> 함수의 활용</h4>
+<p><code>World Population Prospects 2024</code> 데이터를 직접 다운받아 실습을 진행하고자 한다. 이 데이터셋은 매우 중요하다. 다음의 절차에 따라 해당 엑셀 파일을 다운로드한다.</p>
+<ul>
+<li><p>WPP 웹사이트(<a href="https://population.un.org/wpp/" class="uri">https://population.un.org/wpp/</a>)에 접속한다.</p></li>
+<li><p>Download Data Files를 클릭한다.</p></li>
+</ul>
+<div id="fig-wpp-1" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-wpp-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="images/image1.PNG" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Figure&nbsp;1: WPP 데이터 홈페이지(https://population.un.org/wpp/)"><img src="images/image1.PNG" class="img-fluid quarto-figure quarto-figure-center figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-wpp-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: WPP 데이터 홈페이지(<a href="https://population.un.org/wpp/" class="uri">https://population.un.org/wpp/</a>)
+</figcaption>
+</figure>
+</div>
+<ul>
+<li>다음의 파일을 클릭한다: Compact (most used: estimates and medium projections) (XLSX)</li>
+</ul>
+<div id="fig-wpp-2" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-wpp-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="images/image2.PNG" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Figure&nbsp;2: WPP 데이터 선택"><img src="images/image2.PNG" class="img-fluid quarto-figure quarto-figure-center figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-wpp-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: WPP 데이터 선택
+</figcaption>
+</figure>
+</div>
+<ul>
+<li>엑셀 파일(WPP2024_GEN_F01_DEMOGRAPHIC_INDICATORS_COMPACT.xlsx)을 다운로드하여 자신의 프로젝트 폴더에 저장한다.</li>
+</ul>
+<p>R 바깥에서 다운로드한 파일을 열어 어떠한 정보가 어떠한 방식으로 수록되어 있는지 살펴본다. 데이터 불러오기를 위해 다음의 네 가지 사항에 유의해야 함을 이해한다.</p>
+<ul>
+<li><p>16번 행까지는 불필요한 영역이다.</p></li>
+<li><p>17번 행을 변수명으로 사용할 경우 많은 문제점이 발생한다.</p></li>
+<li><p>결측치는 공란이거나 ‘…’ 기호로 표시되어 있다.</p></li>
+<li><p>첫 번째 워킹시트(Estimates)에는 1950~2023의 데이터가, 두 번째 워킹시트(Medium variant)에는 2024~2100년의 데이터가 수록되어 있다. 나중에 결합해야한다.</p></li>
+</ul>
+<p>우선 엑셀 파일을 그대로 불러와 본다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">read_excel</span>(</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"WPP2024_GEN_F01_DEMOGRAPHIC_INDICATORS_COMPACT.xlsx"</span>, </span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">sheet =</span> <span class="st">"Estimates"</span> </span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 21,995 × 65
+   ...1  ...2  ...3  ...4  `United Nations`  ...6  ...7  ...8  ...9  ...10 ...11
+   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;             &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;
+ 1 &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  "Population Divi… &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt; 
+ 2 &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  "Department of E… &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt; 
+ 3 &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;   &lt;NA&gt;             &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt; 
+ 4 &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  "World Populatio… &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt; 
+ 5 &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  "File GEN/01/REV… &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt; 
+ 6 &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  "Estimates, 1950… &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt; 
+ 7 &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  "POP/DB/WPP/Rev.… &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt; 
+ 8 &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  "© July 2024 by … &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt; 
+ 9 &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  "Suggested citat… &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt; 
+10 &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;   &lt;NA&gt;             &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt; 
+# ℹ 21,985 more rows
+# ℹ 54 more variables: ...12 &lt;chr&gt;, ...13 &lt;chr&gt;, ...14 &lt;chr&gt;, ...15 &lt;chr&gt;,
+#   ...16 &lt;chr&gt;, ...17 &lt;chr&gt;, ...18 &lt;chr&gt;, ...19 &lt;chr&gt;, ...20 &lt;chr&gt;,
+#   ...21 &lt;chr&gt;, ...22 &lt;chr&gt;, ...23 &lt;chr&gt;, ...24 &lt;chr&gt;, ...25 &lt;chr&gt;,
+#   ...26 &lt;chr&gt;, ...27 &lt;chr&gt;, ...28 &lt;chr&gt;, ...29 &lt;chr&gt;, ...30 &lt;chr&gt;,
+#   ...31 &lt;chr&gt;, ...32 &lt;chr&gt;, ...33 &lt;chr&gt;, ...34 &lt;chr&gt;, ...35 &lt;chr&gt;,
+#   ...36 &lt;chr&gt;, ...37 &lt;chr&gt;, ...38 &lt;chr&gt;, ...39 &lt;chr&gt;, ...40 &lt;chr&gt;, …</code></pre>
+</div>
+</div>
+<p>끔찍하다. 위의 네 가지 사항을 감안하여 다음과 같은 코드를 실행한다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>new_names <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"index"</span>, <span class="st">"variant"</span>, <span class="st">"region_name"</span>, <span class="st">"notes"</span>, <span class="st">"location_code"</span>, </span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>               <span class="st">"ISO3"</span>, <span class="st">"ISO2"</span>, <span class="st">"SDMX"</span>, <span class="st">"type"</span>, <span class="st">"parent_code"</span>, <span class="st">"year"</span>, <span class="st">"pop_jan_total"</span>, </span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>               <span class="st">"pop_jul_total"</span>, <span class="st">"pop_jul_total_male"</span>, <span class="st">"pop_jul_total_female"</span>, <span class="st">"pop_den"</span>, <span class="st">"sex_ratio"</span>, </span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>               <span class="st">"median_age"</span>, <span class="st">"natural_change"</span>, <span class="st">"RNC"</span>, <span class="st">"pop_change"</span>, <span class="st">"PGR"</span>, </span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>               <span class="st">"doubling_time"</span>, <span class="st">"births"</span>, <span class="st">"births_by_f1519"</span>, <span class="st">"CBR"</span>, <span class="st">"TFR"</span>, <span class="st">"NRR"</span>, </span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>               <span class="st">"mean_age_childbearing"</span>, <span class="st">"sex_ratio_birth"</span>, <span class="st">"deaths_total"</span>, </span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a>               <span class="st">"deaths_male"</span>, <span class="st">"deaths_female"</span>, <span class="st">"CDR"</span>, <span class="st">"life_exp_total"</span>, </span>
+<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a>               <span class="st">"life_exp_male"</span>, <span class="st">"life_exp_female"</span>, <span class="st">"life_exp_15_total"</span>, </span>
+<span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a>               <span class="st">"life_exp_15_male"</span>, <span class="st">"life_exp_15_female"</span>, <span class="st">"life_exp_65_total"</span>, </span>
+<span id="cb45-10"><a href="#cb45-10" aria-hidden="true" tabindex="-1"></a>               <span class="st">"life_exp_65_male"</span>, <span class="st">"life_exp_65_female"</span>, <span class="st">"life_exp_80_total"</span>, </span>
+<span id="cb45-11"><a href="#cb45-11" aria-hidden="true" tabindex="-1"></a>               <span class="st">"life_exp_80_male"</span>, <span class="st">"life_exp_80_female"</span>, <span class="st">"infant_deaths"</span>, </span>
+<span id="cb45-12"><a href="#cb45-12" aria-hidden="true" tabindex="-1"></a>               <span class="st">"IMR"</span>, <span class="st">"live_births"</span>, <span class="st">"under_five_deaths"</span>, <span class="st">"mort_under_five"</span>, </span>
+<span id="cb45-13"><a href="#cb45-13" aria-hidden="true" tabindex="-1"></a>               <span class="st">"mort_bf_40_total"</span>, <span class="st">"mort_bf_40_male"</span>, <span class="st">"mort_bf_40_female"</span>, <span class="st">"mort_bf_60_total"</span>, </span>
+<span id="cb45-14"><a href="#cb45-14" aria-hidden="true" tabindex="-1"></a>               <span class="st">"mort_bf_60_male"</span>, <span class="st">"mort_bf_60_female"</span>, <span class="st">"mort_bt_1550_total"</span>, </span>
+<span id="cb45-15"><a href="#cb45-15" aria-hidden="true" tabindex="-1"></a>               <span class="st">"mort_bt_1550_male"</span>, <span class="st">"mort_bt_1550_female"</span>, <span class="st">"mort_bt_1560_total"</span>, </span>
+<span id="cb45-16"><a href="#cb45-16" aria-hidden="true" tabindex="-1"></a>               <span class="st">"mort_bt_1560_male"</span>, <span class="st">"mort_bt_1560_female"</span>, <span class="st">"net_migrants"</span>, <span class="st">"NMR"</span>)</span>
+<span id="cb45-17"><a href="#cb45-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-18"><a href="#cb45-18" aria-hidden="true" tabindex="-1"></a>wpp_2024_estimates <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(</span>
+<span id="cb45-19"><a href="#cb45-19" aria-hidden="true" tabindex="-1"></a>  <span class="st">"WPP2024_GEN_F01_DEMOGRAPHIC_INDICATORS_COMPACT.xlsx"</span>,</span>
+<span id="cb45-20"><a href="#cb45-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">sheet =</span> <span class="st">"Estimates"</span>,</span>
+<span id="cb45-21"><a href="#cb45-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">skip =</span> <span class="dv">17</span>, </span>
+<span id="cb45-22"><a href="#cb45-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">col_names =</span> new_names,</span>
+<span id="cb45-23"><a href="#cb45-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">col_types =</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="st">"guess"</span>, <span class="dv">3</span>), <span class="st">"text"</span>, <span class="st">"guess"</span>, <span class="fu">rep</span>(<span class="st">"text"</span>, <span class="dv">2</span>), <span class="fu">rep</span>(<span class="st">"guess"</span>, <span class="dv">58</span>)),</span>
+<span id="cb45-24"><a href="#cb45-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">na =</span> <span class="fu">c</span>(<span class="st">"..."</span>, <span class="st">""</span>)</span>
+<span id="cb45-25"><a href="#cb45-25" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb45-26"><a href="#cb45-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-27"><a href="#cb45-27" aria-hidden="true" tabindex="-1"></a>wpp_2024_future <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(</span>
+<span id="cb45-28"><a href="#cb45-28" aria-hidden="true" tabindex="-1"></a>  <span class="st">"WPP2024_GEN_F01_DEMOGRAPHIC_INDICATORS_COMPACT.xlsx"</span>,</span>
+<span id="cb45-29"><a href="#cb45-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">sheet =</span> <span class="st">"Medium variant"</span>,</span>
+<span id="cb45-30"><a href="#cb45-30" aria-hidden="true" tabindex="-1"></a>  <span class="at">skip =</span> <span class="dv">17</span>, </span>
+<span id="cb45-31"><a href="#cb45-31" aria-hidden="true" tabindex="-1"></a>  <span class="at">col_names =</span> new_names,</span>
+<span id="cb45-32"><a href="#cb45-32" aria-hidden="true" tabindex="-1"></a>  <span class="at">col_types =</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="st">"guess"</span>, <span class="dv">3</span>), <span class="st">"text"</span>, <span class="st">"guess"</span>, <span class="fu">rep</span>(<span class="st">"text"</span>, <span class="dv">2</span>), <span class="fu">rep</span>(<span class="st">"guess"</span>, <span class="dv">58</span>)),</span>
+<span id="cb45-33"><a href="#cb45-33" aria-hidden="true" tabindex="-1"></a>  <span class="at">na =</span> <span class="fu">c</span>(<span class="st">"..."</span>, <span class="st">""</span>)</span>
+<span id="cb45-34"><a href="#cb45-34" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb45-35"><a href="#cb45-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-36"><a href="#cb45-36" aria-hidden="true" tabindex="-1"></a>wpp_2024 <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(wpp_2024_estimates, wpp_2024_future)</span>
+<span id="cb45-37"><a href="#cb45-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-38"><a href="#cb45-38" aria-hidden="true" tabindex="-1"></a>wpp_2024 <span class="ot">&lt;-</span> wpp_2024 <span class="sc">|&gt;</span> </span>
+<span id="cb45-39"><a href="#cb45-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(</span>
+<span id="cb45-40"><a href="#cb45-40" aria-hidden="true" tabindex="-1"></a>    type <span class="sc">!=</span> <span class="st">"Label/Separator"</span></span>
+<span id="cb45-41"><a href="#cb45-41" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb45-42"><a href="#cb45-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb45-43"><a href="#cb45-43" aria-hidden="true" tabindex="-1"></a>    <span class="fu">across</span>(</span>
+<span id="cb45-44"><a href="#cb45-44" aria-hidden="true" tabindex="-1"></a>      <span class="fu">c</span>(pop_jan_total, pop_jul_total, pop_jul_total_male, pop_jul_total_female, </span>
+<span id="cb45-45"><a href="#cb45-45" aria-hidden="true" tabindex="-1"></a>        natural_change, pop_change, births, deaths_total, </span>
+<span id="cb45-46"><a href="#cb45-46" aria-hidden="true" tabindex="-1"></a>        deaths_male, deaths_female, net_migrants), \(x) x <span class="sc">*</span> <span class="dv">1000</span></span>
+<span id="cb45-47"><a href="#cb45-47" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb45-48"><a href="#cb45-48" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb45-49"><a href="#cb45-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-50"><a href="#cb45-50" aria-hidden="true" tabindex="-1"></a><span class="fu">view</span>(wpp_2024)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>위의 코드는 다음의 단계로 진행된 것이다.</p>
+<ul>
+<li><p>변수명을 새로 지정해 둔다.</p></li>
+<li><p><code>read_excel()</code> 함수를 이용하여 시트명이 “Estimates”(1950-2023)인 것을 불러들인다. <code>sheet</code>, <code>skip</code>, <code>col_names</code>, <code>col_types</code>, <code>na</code>과 같은 인수가 사용된다. <code>sheet</code> 인수는 엑셀 시트의 이름을 지정하고, <code>skip</code> 인수는 몇번 째 행까지를 읽지 않을 것인가를 지정한다. <code>col_names</code> 인수는 컬럼 이름을 지정하는데, 미리 만들어 둔 <code>new_names</code> 객체가 지정된 것을 볼 수 있다. <code>col_types</code> 인수는 컬럼의 유형을 미리 설정하는데, “skip”, “guess”, “logical”, “numeric”, “date”, “text”, “list” 중 선택을 할 수 있다. 불러들인 후 다시 지정할 수도 있지만 미리 해두면 불러 들이는 시간을 좀 더 단축할 수 있다.</p></li>
+<li><p>동일한 방식으로 시트명이 “Medium variant”(2024-2100)인 것을 불러들인다. 동일한 인수가 사용된다.</p></li>
+<li><p><code>bind_rows()</code> 함수를 이용하여 두 객체를 결합한다.</p></li>
+<li><p>불필요한 행(<code>type</code> 컬럼이 “Label/Separator”로 되어 있는 경우)을 제거하고, 단위가 1,000으로 설정되어 있는 변수들을 원 변수값으로 되돌린다.</p></li>
+</ul>
+<p>나중에 사용하기 위해, <a href="https://github.com/ropensci/writexl"><strong>writexl</strong></a> 패키지의 <code>write_xlsx()</code> 함수를 이용하여 엑셀 파일로 저장한다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(writexl)</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="fu">write_xlsx</span>(wpp_2024, <span class="st">"wpp_2024.xlsx"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>그런데, 저장된 파일을 <code>read_excel()</code> 함수로 다시 불러 들이면 컬럼 형식에 대한 정보가 사라져 버리는 등의 에러가 발생한다. 이런 점 때문에 다음과 같은 대안이 존재한다. <a href="https://readr.tidyverse.org/"><strong>readr</strong></a> 패키지의 <code>write_rds()</code> 함수로 저장하고, 다시 <code>read_rds()</code> 함수로 불러들이면 정확히 동일한 것을 얻을 수 있다. RDS는 R에서만 사용되는 데이터 이진 포맷(binary format)이다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write_rds</span>(wpp_2024, <span class="st">"wpp_2024.rds"</span>)</span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a><span class="fu">read_rds</span>(<span class="st">"wpp_2024.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 44,847 × 65
+   index variant   region_name notes location_code ISO3  ISO2   SDMX type 
+   &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;       &lt;chr&gt;         &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt; &lt;chr&gt;
+ 1     1 Estimates World       &lt;NA&gt;            900 &lt;NA&gt;  &lt;NA&gt;      1 World
+ 2     2 Estimates World       &lt;NA&gt;            900 &lt;NA&gt;  &lt;NA&gt;      1 World
+ 3     3 Estimates World       &lt;NA&gt;            900 &lt;NA&gt;  &lt;NA&gt;      1 World
+ 4     4 Estimates World       &lt;NA&gt;            900 &lt;NA&gt;  &lt;NA&gt;      1 World
+ 5     5 Estimates World       &lt;NA&gt;            900 &lt;NA&gt;  &lt;NA&gt;      1 World
+ 6     6 Estimates World       &lt;NA&gt;            900 &lt;NA&gt;  &lt;NA&gt;      1 World
+ 7     7 Estimates World       &lt;NA&gt;            900 &lt;NA&gt;  &lt;NA&gt;      1 World
+ 8     8 Estimates World       &lt;NA&gt;            900 &lt;NA&gt;  &lt;NA&gt;      1 World
+ 9     9 Estimates World       &lt;NA&gt;            900 &lt;NA&gt;  &lt;NA&gt;      1 World
+10    10 Estimates World       &lt;NA&gt;            900 &lt;NA&gt;  &lt;NA&gt;      1 World
+# ℹ 44,837 more rows
+# ℹ 56 more variables: parent_code &lt;dbl&gt;, year &lt;dbl&gt;, pop_jan_total &lt;dbl&gt;,
+#   pop_jul_total &lt;dbl&gt;, pop_jul_total_male &lt;dbl&gt;, pop_jul_total_female &lt;dbl&gt;,
+#   pop_den &lt;dbl&gt;, sex_ratio &lt;dbl&gt;, median_age &lt;dbl&gt;, natural_change &lt;dbl&gt;,
+#   RNC &lt;dbl&gt;, pop_change &lt;dbl&gt;, PGR &lt;dbl&gt;, doubling_time &lt;dbl&gt;, births &lt;dbl&gt;,
+#   births_by_f1519 &lt;dbl&gt;, CBR &lt;dbl&gt;, TFR &lt;dbl&gt;, NRR &lt;dbl&gt;,
+#   mean_age_childbearing &lt;dbl&gt;, sex_ratio_birth &lt;dbl&gt;, deaths_total &lt;dbl&gt;, …</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="데이터-쓰기" class="level3" data-number="2.3">
+<h3 data-number="2.3" class="anchored" data-anchor-id="데이터-쓰기"><span class="header-section-number">2.3</span> 데이터 쓰기</h3>
+<p><strong>readr</strong> 패키지는 <code>write_csv()</code>, <code>write_delim()</code>와 같은 함수를 제공한다. 엑셀 파일을 저장하기 위해서는 <a href="https://github.com/ropensci/writexl"><strong>writexl</strong></a> 패키지의 <code>write_xlsx()</code> 함수를 사용한다. 혹은 <a href="https://ycphs.github.io/openxlsx/"><strong>openxlsx</strong></a> 패키지의 <code>write.xlsx()</code> 함수를 사용할 수도 있다.</p>
+</section>
+</section>
+<section id="데이터-정리하기" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="데이터-정리하기"><span class="header-section-number">3</span> 데이터 정리하기</h2>
+<p>데이터 정리하기는 지저분한 데이터(messy data)를 정돈된 데이터(tidy data)로 만드는 과정을 의미한다. 정돈된 데이터는 다음의 세 가지 속성을 갖는다.</p>
+<ul>
+<li><p>개별 변수(variable)는 열(컬럼, column) 하나를 차지한다. 즉, 개별 열에는 하나의 변수가 위치한다.</p></li>
+<li><p>개별 관측개체(observation)는 하나의 행(로, row)을 차지한다. 즉, 개별 행에는 하나의 관측개체가 위치한다.</p></li>
+<li><p>개별 값(value)은 하나의 셀(cell)을 차지한다. 즉, 개별 셀에는 하나의 값이 위치한다.</p></li>
+</ul>
+<p>이 세가지 속성 중 하나라도 위배하는 데이터는 정돈된 데이터가 아니다. 어떤 데이터이건 그것이 정돈된 데이터이기만 하다면, 표준적인 툴을 통해 해당 데이터를 다른 데이터와 동일한 방식으로 다룰 수 있다. 데이터 정리하기에 특화된 패키지가 <a href="https://www.tidyverse.org/"><strong>tidyverse</strong></a> 패키지의 핵심 패키지 중의 하나인 <a href="https://tidyr.tidyverse.org/"><strong>tidyr</strong></a> 패키지이다.</p>
+<p>데이터 정리하기는 다음의 세 가지 범주로 나뉜다.</p>
+<ul>
+<li><p>데이터 구조 변형: 가장 중요한 오퍼레이션으로 데이터 늘이기와 데이터 넓히기기가 포함된다.</p></li>
+<li><p>컬럼의 결합 및 분할: 두 개 이상의 컬럼을 하나의 컬럼으로 결합하거나 한 컬럼을 두 개 이상의 컬럼으로 분할한다.</p></li>
+<li><p>결측치 처리: 결측치가 포함된 행을 다양한 방식으로 처리한다.</p></li>
+</ul>
+<section id="데이터-구조-변형" class="level3" data-number="3.1">
+<h3 data-number="3.1" class="anchored" data-anchor-id="데이터-구조-변형"><span class="header-section-number">3.1</span> 데이터 구조 변형</h3>
+<p>여기서는 데이터 늘이기(lengthening data)와 데이터 넓히기(widening data)에 집중한다. 데이터 늘이기는 행을 늘이는 방식으로 데이터 구조를 변형하는 것이고, 데이터 넓히기는 컬럼의 숫자를 늘이는 방식으로 데이터 구조를 변형하는 것이다.</p>
+<section id="데이터-늘이기" class="level4" data-number="3.1.1">
+<h4 data-number="3.1.1" class="anchored" data-anchor-id="데이터-늘이기"><span class="header-section-number">3.1.1</span> 데이터 늘이기</h4>
+<p>실습을 위해 <a href="https://www.tidyverse.org/"><strong>tidyverse</strong></a> 패키지에 포함되어 있는 <code>billboard</code> 데이터를 사용한다. 이 데이터셋에는 2000년 한해 동안 노래의 주별 순위 정보가 포함되어 있다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>billboard</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 317 × 79
+   artist     track date.entered   wk1   wk2   wk3   wk4   wk5   wk6   wk7   wk8
+   &lt;chr&gt;      &lt;chr&gt; &lt;date&gt;       &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+ 1 2 Pac      Baby… 2000-02-26      87    82    72    77    87    94    99    NA
+ 2 2Ge+her    The … 2000-09-02      91    87    92    NA    NA    NA    NA    NA
+ 3 3 Doors D… Kryp… 2000-04-08      81    70    68    67    66    57    54    53
+ 4 3 Doors D… Loser 2000-10-21      76    76    72    69    67    65    55    59
+ 5 504 Boyz   Wobb… 2000-04-15      57    34    25    17    17    31    36    49
+ 6 98^0       Give… 2000-08-19      51    39    34    26    26    19     2     2
+ 7 A*Teens    Danc… 2000-07-08      97    97    96    95   100    NA    NA    NA
+ 8 Aaliyah    I Do… 2000-01-29      84    62    51    41    38    35    35    38
+ 9 Aaliyah    Try … 2000-03-18      59    53    38    28    21    18    16    14
+10 Adams, Yo… Open… 2000-08-26      76    76    74    69    68    67    61    58
+# ℹ 307 more rows
+# ℹ 68 more variables: wk9 &lt;dbl&gt;, wk10 &lt;dbl&gt;, wk11 &lt;dbl&gt;, wk12 &lt;dbl&gt;,
+#   wk13 &lt;dbl&gt;, wk14 &lt;dbl&gt;, wk15 &lt;dbl&gt;, wk16 &lt;dbl&gt;, wk17 &lt;dbl&gt;, wk18 &lt;dbl&gt;,
+#   wk19 &lt;dbl&gt;, wk20 &lt;dbl&gt;, wk21 &lt;dbl&gt;, wk22 &lt;dbl&gt;, wk23 &lt;dbl&gt;, wk24 &lt;dbl&gt;,
+#   wk25 &lt;dbl&gt;, wk26 &lt;dbl&gt;, wk27 &lt;dbl&gt;, wk28 &lt;dbl&gt;, wk29 &lt;dbl&gt;, wk30 &lt;dbl&gt;,
+#   wk31 &lt;dbl&gt;, wk32 &lt;dbl&gt;, wk33 &lt;dbl&gt;, wk34 &lt;dbl&gt;, wk35 &lt;dbl&gt;, wk36 &lt;dbl&gt;,
+#   wk37 &lt;dbl&gt;, wk38 &lt;dbl&gt;, wk39 &lt;dbl&gt;, wk40 &lt;dbl&gt;, wk41 &lt;dbl&gt;, wk42 &lt;dbl&gt;, …</code></pre>
+</div>
+</div>
+<p>관측개체는 개별 노래이며 앞의 세 변수(artist, track, data.entered)는 노래 관련 속성이고, 나머지 76개 변수(wk1~wk76)는 76주간 개별 노래의 순위를 나타낸다. ’몇 번째 주인가’는 변수일 수 없으므로 week라는 변수를 생성하여 개별주가 변수값이 되도록 데이터를 변형할 필요가 있다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>billboard <span class="sc">|&gt;</span> </span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(</span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">cols =</span> <span class="fu">starts_with</span>(<span class="st">"wk"</span>), </span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_to =</span> <span class="st">"week"</span>, </span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_to =</span> <span class="st">"rank"</span></span>
+<span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 24,092 × 5
+   artist track                   date.entered week   rank
+   &lt;chr&gt;  &lt;chr&gt;                   &lt;date&gt;       &lt;chr&gt; &lt;dbl&gt;
+ 1 2 Pac  Baby Don't Cry (Keep... 2000-02-26   wk1      87
+ 2 2 Pac  Baby Don't Cry (Keep... 2000-02-26   wk2      82
+ 3 2 Pac  Baby Don't Cry (Keep... 2000-02-26   wk3      72
+ 4 2 Pac  Baby Don't Cry (Keep... 2000-02-26   wk4      77
+ 5 2 Pac  Baby Don't Cry (Keep... 2000-02-26   wk5      87
+ 6 2 Pac  Baby Don't Cry (Keep... 2000-02-26   wk6      94
+ 7 2 Pac  Baby Don't Cry (Keep... 2000-02-26   wk7      99
+ 8 2 Pac  Baby Don't Cry (Keep... 2000-02-26   wk8      NA
+ 9 2 Pac  Baby Don't Cry (Keep... 2000-02-26   wk9      NA
+10 2 Pac  Baby Don't Cry (Keep... 2000-02-26   wk10     NA
+# ℹ 24,082 more rows</code></pre>
+</div>
+</div>
+<p><code>cols</code>는 새로 생성될 변수의 변수값이 되어야 할 현 데이터셋의 변수들을 지정한다. <code>names_to</code>는 <code>cols</code>를 통해 지정된 변수명이 변수값으로 들어갈 새로 운 변수의 이름을 지정한다. <code>values_to</code>는 <code>cols</code> 변수들의 변수값들이 들어갈 새로운 변수의 이름을 지정한다.</p>
+<p>그런데, 좀 더 복잡한 데이터 늘이기의 상황이 있을 수 있다. <a href="https://www.tidyverse.org/"><strong>tidyverse</strong></a> 패키지에 포함되어 있는 <code>who2</code> 데이터를 사용한다. 이것은 WHO(world Health Organization, 세계보건기구)에서 제공한 데이터로서 1980~2013년 전세계 209개국의 결핵 환자수에 대한 데이터이다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(who2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 7,240
+Columns: 58
+$ country    &lt;chr&gt; "Afghanistan", "Afghanistan", "Afghanistan", "Afghanistan",…
+$ year       &lt;dbl&gt; 1980, 1981, 1982, 1983, 1984, 1985, 1986, 1987, 1988, 1989,…
+$ sp_m_014   &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ sp_m_1524  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ sp_m_2534  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ sp_m_3544  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ sp_m_4554  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ sp_m_5564  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ sp_m_65    &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ sp_f_014   &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ sp_f_1524  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ sp_f_2534  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ sp_f_3544  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ sp_f_4554  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ sp_f_5564  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ sp_f_65    &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ sn_m_014   &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ sn_m_1524  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ sn_m_2534  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ sn_m_3544  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ sn_m_4554  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ sn_m_5564  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ sn_m_65    &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ sn_f_014   &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ sn_f_1524  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ sn_f_2534  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ sn_f_3544  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ sn_f_4554  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ sn_f_5564  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ sn_f_65    &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ ep_m_014   &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ ep_m_1524  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ ep_m_2534  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ ep_m_3544  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ ep_m_4554  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ ep_m_5564  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ ep_m_65    &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ ep_f_014   &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ ep_f_1524  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ ep_f_2534  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ ep_f_3544  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ ep_f_4554  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ ep_f_5564  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ ep_f_65    &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ rel_m_014  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ rel_m_1524 &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ rel_m_2534 &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ rel_m_3544 &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ rel_m_4554 &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ rel_m_5564 &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ rel_m_65   &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ rel_f_014  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ rel_f_1524 &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ rel_f_2534 &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ rel_f_3544 &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ rel_f_4554 &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ rel_f_5564 &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ rel_f_65   &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</code></pre>
+</div>
+</div>
+<p><code>country</code>와 <code>year</code>은 분명한 변수이지만 나머지 56개 변수는 무엇인지 알 수 없다. 그런데 잘 살펴보면, 변수명에 어떤 패턴이 있다는 것을 알 수 있다. 모두 세 부분으로 나뉘어져 있는데, 첫 번째 부분은 진단법(sp, rel, ep)과 관련되어 있고, 두 번째 부분은 성(m, f)과 관련되어 있고, 세 번째 부분은 연령(014, 1524, 2534, 3544, 4554, 5564, 65)과 관련되어 있다. 56개 변수의 셀 값은 모두 케이스(환자수)를 의미한다. 이 지저분한 데이터를 <code>pivot_longer()</code> 함수를 이용해 정돈된 데이터로 만들어 본다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>who2 <span class="sc">|&gt;</span> </span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(</span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">cols =</span> <span class="sc">!</span><span class="fu">c</span>(country, year),</span>
+<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_to =</span> <span class="fu">c</span>(<span class="st">"diagnosis"</span>, <span class="st">"gender"</span>, <span class="st">"age"</span>), </span>
+<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_sep =</span> <span class="st">"_"</span>,</span>
+<span id="cb55-6"><a href="#cb55-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_to =</span> <span class="st">"count"</span></span>
+<span id="cb55-7"><a href="#cb55-7" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 405,440 × 6
+   country      year diagnosis gender age   count
+   &lt;chr&gt;       &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;  &lt;chr&gt; &lt;dbl&gt;
+ 1 Afghanistan  1980 sp        m      014      NA
+ 2 Afghanistan  1980 sp        m      1524     NA
+ 3 Afghanistan  1980 sp        m      2534     NA
+ 4 Afghanistan  1980 sp        m      3544     NA
+ 5 Afghanistan  1980 sp        m      4554     NA
+ 6 Afghanistan  1980 sp        m      5564     NA
+ 7 Afghanistan  1980 sp        m      65       NA
+ 8 Afghanistan  1980 sp        f      014      NA
+ 9 Afghanistan  1980 sp        f      1524     NA
+10 Afghanistan  1980 sp        f      2534     NA
+# ℹ 405,430 more rows</code></pre>
+</div>
+</div>
+<p>각 인수의 역할에 대해 이해하는 것이 중요하다. 그리고 정돈된 데이터를 만들기 위해 왜 데이터 ’늘이기’를 해야하는지 생각해 본다.</p>
+<p>이것보다 좀 더 복잡한 데이터 늘이기의 상황이 있을 수 있다. 간단한 예시인 <code>household</code> 데이터를 살펴보자.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>household</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 5
+  family dob_child1 dob_child2 name_child1 name_child2
+   &lt;int&gt; &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;       &lt;chr&gt;      
+1      1 1998-11-26 2000-01-29 Susan       Jose       
+2      2 1996-06-22 NA         Mark        &lt;NA&gt;       
+3      3 2002-07-11 2004-04-05 Sam         Seth       
+4      4 2004-10-10 2009-08-27 Craig       Khai       
+5      5 2000-12-05 2005-02-28 Parker      Gracie     </code></pre>
+</div>
+</div>
+<p>자세히 살펴보면 변수명에 두 개의 변수(<code>dob</code>, <code>name</code>)와 또 다른 변수(<code>child</code>)의 두 숫자(<code>1</code>, <code>2</code>)가 포함되어 있다. 각 <code>family</code>별로 최대 두 명까지의 자녀가 있고 각 자녀별로 생년월일과 이름에 대한 정보가 포함되어 있다. 첫 행은 첫 번째 가정의 첫 번째 자녀의 생년월일은 1998년 11월 26일이고 이름은 Susan이며, 두 번째 자녀의 생년월일은 2000년 1월 29일이고 이름은 Jose이다. 분리자인 “<code>_</code>”이 존재하므로 <code>dob</code>와 <code>name</code>은 두 변수로 분리하고, 첫번째 자녀인지 두번째 자녀인지를 알려주는 또 다른 변수를 생성해야 한다. 이를 위해 <code>.value</code>라고 하는 특별한 것을 사용한다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>household <span class="sc">|&gt;</span> </span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(</span>
+<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">cols =</span> <span class="sc">!</span>family, </span>
+<span id="cb59-4"><a href="#cb59-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_to =</span> <span class="fu">c</span>(<span class="st">".value"</span>, <span class="st">"child"</span>), </span>
+<span id="cb59-5"><a href="#cb59-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_sep =</span> <span class="st">"_"</span>, </span>
+<span id="cb59-6"><a href="#cb59-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_drop_na =</span> <span class="cn">TRUE</span></span>
+<span id="cb59-7"><a href="#cb59-7" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 9 × 4
+  family child  dob        name  
+   &lt;int&gt; &lt;chr&gt;  &lt;date&gt;     &lt;chr&gt; 
+1      1 child1 1998-11-26 Susan 
+2      1 child2 2000-01-29 Jose  
+3      2 child1 1996-06-22 Mark  
+4      3 child1 2002-07-11 Sam   
+5      3 child2 2004-04-05 Seth  
+6      4 child1 2004-10-10 Craig 
+7      4 child2 2009-08-27 Khai  
+8      5 child1 2000-12-05 Parker
+9      5 child2 2005-02-28 Gracie</code></pre>
+</div>
+</div>
+<p><code>names_to = c(".value", "child")</code>와 <code>names_sep = "_"</code>는 네 개의 변수(<code>dob_child1</code>, <code>dob_child2</code>, <code>name_child1</code>, <code>name_child2</code>)의 이름을 크게 두 부분으로 분할하여 앞 부분(<code>dob</code>와 <code>name</code>)을 새로운 변수로 생성하고, 뒷 부분(<code>child1</code>, <code>child2</code>)는 child라는 변수를 새로 생성하여 그것은 변수값으로 전환한다. 결국 변수명의 일부는 새로운 변수명이 되고, 또 다른 일부는 변수값이 되는 것이다. 이렇게 되면 <code>values_to</code> 아규먼트가 필요없게 된다. 마지막에 있는 <code>values_drop_na</code> 아규먼트도 중요한 역할을 하는데, 두 번째 가정은 한 자녀만을 가지고 있기 때문에 결측값이 포함되어 있는데 그것을 최종 결과에 포함시키지 않는 일을 한다.</p>
+</section>
+<section id="데이터-넓히기" class="level4" data-number="3.1.2">
+<h4 data-number="3.1.2" class="anchored" data-anchor-id="데이터-넓히기"><span class="header-section-number">3.1.2</span> 데이터 넓히기</h4>
+<p>실습을 위해 <a href="https://www.tidyverse.org/"><strong>tidyverse</strong></a> 패키지에 포함되어 있는 <code>cms_patient_experience</code> 데이터를 사용한다. 이것은 미국의 <a href="https://www.cms.gov/">Centers of Medicare and Meicaid Services</a>가 제공한 데이터이다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>cms_patient_experience</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 500 × 5
+   org_pac_id org_nm                           measure_cd measure_title prf_rate
+   &lt;chr&gt;      &lt;chr&gt;                            &lt;chr&gt;      &lt;chr&gt;            &lt;dbl&gt;
+ 1 0446157747 USC CARE MEDICAL GROUP INC       CAHPS_GRP… CAHPS for MI…       63
+ 2 0446157747 USC CARE MEDICAL GROUP INC       CAHPS_GRP… CAHPS for MI…       87
+ 3 0446157747 USC CARE MEDICAL GROUP INC       CAHPS_GRP… CAHPS for MI…       86
+ 4 0446157747 USC CARE MEDICAL GROUP INC       CAHPS_GRP… CAHPS for MI…       57
+ 5 0446157747 USC CARE MEDICAL GROUP INC       CAHPS_GRP… CAHPS for MI…       85
+ 6 0446157747 USC CARE MEDICAL GROUP INC       CAHPS_GRP… CAHPS for MI…       24
+ 7 0446162697 ASSOCIATION OF UNIVERSITY PHYSI… CAHPS_GRP… CAHPS for MI…       59
+ 8 0446162697 ASSOCIATION OF UNIVERSITY PHYSI… CAHPS_GRP… CAHPS for MI…       85
+ 9 0446162697 ASSOCIATION OF UNIVERSITY PHYSI… CAHPS_GRP… CAHPS for MI…       83
+10 0446162697 ASSOCIATION OF UNIVERSITY PHYSI… CAHPS_GRP… CAHPS for MI…       63
+# ℹ 490 more rows</code></pre>
+</div>
+</div>
+<p>이 데이터도 정돈된 데이터가 아니다. 자세히 살펴보면 다음과 같은 사실을 알 수 있다.</p>
+<ul>
+<li><p><code>org_pac_id</code>와 <code>org_nm</code> 변수는 의료조직의 식별자와 이름이다.</p></li>
+<li><p>의료조직별로 6개씩의 열을 차지하고 있는데, 6개의 열은 <code>measure_cd</code>와 <code>measure_title</code>에 나타나 있는 것과 같은 6개의 서로 다른 조사 항목을 나타낸다. (ex. CAHPS_GRP_1은 환자의 경험 지표중 진료 예약 정보 제공 점수)</p></li>
+<li><p>마지막의 <code>prf_rate</code>는 조사 항목별 점수이다.</p></li>
+</ul>
+<p><code>pivot_wider()</code> 함수를 이용하여, 행에는 개별 의료조직이, 열에는 개별 조사 항목이 나타나는 정돈된 데이터를 만들어 본다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a>cms_patient_experience <span class="sc">|&gt;</span> </span>
+<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(</span>
+<span id="cb63-3"><a href="#cb63-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">id_cols =</span> <span class="fu">starts_with</span>(<span class="st">"org"</span>),</span>
+<span id="cb63-4"><a href="#cb63-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_from =</span> measure_cd,</span>
+<span id="cb63-5"><a href="#cb63-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_from =</span> prf_rate</span>
+<span id="cb63-6"><a href="#cb63-6" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 95 × 8
+   org_pac_id org_nm CAHPS_GRP_1 CAHPS_GRP_2 CAHPS_GRP_3 CAHPS_GRP_5 CAHPS_GRP_8
+   &lt;chr&gt;      &lt;chr&gt;        &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt;
+ 1 0446157747 USC C…          63          87          86          57          85
+ 2 0446162697 ASSOC…          59          85          83          63          88
+ 3 0547164295 BEAVE…          49          NA          75          44          73
+ 4 0749333730 CAPE …          67          84          85          65          82
+ 5 0840104360 ALLIA…          66          87          87          64          87
+ 6 0840109864 REX H…          73          87          84          67          91
+ 7 0840513552 SCL H…          58          83          76          58          78
+ 8 0941545784 GRITM…          46          86          81          54          NA
+ 9 1052612785 COMMU…          65          84          80          58          87
+10 1254237779 OUR L…          61          NA          NA          65          NA
+# ℹ 85 more rows
+# ℹ 1 more variable: CAHPS_GRP_12 &lt;dbl&gt;</code></pre>
+</div>
+</div>
+<p>이제 어떤 의료조직이 어떤 항목에서 얼마의 점수를 받았는지를 일목요연하게 알아 볼 수 있다. <code>id_cols</code>는 각 행의 완전한 고유성을 위해 필요한 모든 변수를 지정한다. 사례의 경우 <code>org</code>가 들어가는 <code>org_pac_id</code>와 <code>org_nm</code>이 그 역할을 하는데, 사실 둘은 판별자로서 동일한 것이기 때문에 둘 중 하나만 사용해도 된다. 그러나 그러면 최종 산출물에서 지정되지 않은 컬럼은 나타나지 않기 때문에 동일한 기능을 하더라도 모두 지정하는 것이 좋다. 여러개의 변수가 집합적으로 판별자 역할을 하는 경우가 많이 있으며, 그럴 경우 해당 변수를 모두 지정해 주어야 한다. 하나라도 누락되면 에러가 발생하거나 원치 않는 결과를 얻게 된다. <code>names_from</code>은 새로이 생성될 변수들의 이름을 변수값으로 가지고 있는 변수명을 지정한다. <code>values_from</code>은 새로 생성될 변수들의 변수값이 될 값이 어떤 변수로부터 오는지를 지정한다. 정돈된 데이터를 만들기 위해 이번에는 왜 데이터 ’넓히기’를 해야했는지 생각해 본다.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="단원 마무리 QUIZ">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+단원 마무리 QUIZ
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>데이터구조 변경의 마지막으로 한 가지 퀴즈를 내보고자 한다. 퀴즈에서 사용할 데이터는 <code>world_bank_pop</code>로 <a href="https://tidyr.tidyverse.org/"><strong>tidyr</strong></a>에 포함된 데이터셋 중 하나이다. 이 데이터셋에는 연도별 인구수가 들어가 있다. 우선, 우리는 오늘 총인구만을 가지고 데이터를 정리할 것이기 때문에 <code>indicator</code>에서 <code>SP.POP.TOTL</code>만을 선택하고자 한다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a>world_pop <span class="ot">&lt;-</span> world_bank_pop <span class="sc">|&gt;</span> </span>
+<span id="cb65-2"><a href="#cb65-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(indicator <span class="sc">==</span> <span class="st">"SP.POP.TOTL"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">문제A</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">코드A</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false" href="">문제B</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-4" role="tab" aria-controls="tabset-1-4" aria-selected="false" href="">코드B</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<p><code>world_pop</code>의 구조를 확인하고, 아래의 분석을 수행할 수 있도록 데이터를 정리하라.</p>
+<ul>
+<li><p>한 나라(예: “KOR”)의 연도별 인구 추이 그래프를 그리려고 한다.</p></li>
+<li><p>x축에는 연도를 y축에는 인구수의 데이터가 필요하다.</p></li>
+<li><p>연도가 추가 되도라도 새로운 열 변수를 추가하지 않고도 작업할 수 있어야 한다.</p></li>
+</ul>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a>wb_long <span class="ot">&lt;-</span> world_pop <span class="sc">|&gt;</span> </span>
+<span id="cb66-2"><a href="#cb66-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(</span>
+<span id="cb66-3"><a href="#cb66-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">cols =</span> <span class="sc">!</span><span class="fu">c</span>(country, indicator),</span>
+<span id="cb66-4"><a href="#cb66-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_to =</span> <span class="st">"year"</span>,</span>
+<span id="cb66-5"><a href="#cb66-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_to =</span> <span class="st">"pop"</span></span>
+<span id="cb66-6"><a href="#cb66-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb66-7"><a href="#cb66-7" aria-hidden="true" tabindex="-1"></a>wb_long</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4,788 × 4
+   country indicator   year    pop
+   &lt;chr&gt;   &lt;chr&gt;       &lt;chr&gt; &lt;dbl&gt;
+ 1 ABW     SP.POP.TOTL 2000  89101
+ 2 ABW     SP.POP.TOTL 2001  90691
+ 3 ABW     SP.POP.TOTL 2002  91781
+ 4 ABW     SP.POP.TOTL 2003  92701
+ 5 ABW     SP.POP.TOTL 2004  93540
+ 6 ABW     SP.POP.TOTL 2005  94483
+ 7 ABW     SP.POP.TOTL 2006  95606
+ 8 ABW     SP.POP.TOTL 2007  96787
+ 9 ABW     SP.POP.TOTL 2008  97996
+10 ABW     SP.POP.TOTL 2009  99212
+# ℹ 4,778 more rows</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
+<p>여러나라의 인구를 한 눈에 비교할 수 있는 표가 필요하다. <code>wb_long</code>의 구조를 확인하고, 이를 위한 데이터를 정리하라.</p>
+<ul>
+<li>결과는 표에서 연도 간 값을 가로로 나란히 비교하기 쉽도록 구성되어 있어야 한다.</li>
+</ul>
+</div>
+<div id="tabset-1-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-4-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a>wb_long <span class="sc">|&gt;</span></span>
+<span id="cb68-2"><a href="#cb68-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(</span>
+<span id="cb68-3"><a href="#cb68-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">id_cols =</span> <span class="fu">c</span>(country),</span>
+<span id="cb68-4"><a href="#cb68-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_from =</span> year,</span>
+<span id="cb68-5"><a href="#cb68-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_from =</span> pop)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 266 × 19
+   country `2000` `2001` `2002` `2003` `2004` `2005` `2006` `2007` `2008` `2009`
+   &lt;chr&gt;    &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
+ 1 ABW     8.91e4 9.07e4 9.18e4 9.27e4 9.35e4 9.45e4 9.56e4 9.68e4 9.80e4 9.92e4
+ 2 AFE     4.02e8 4.12e8 4.23e8 4.34e8 4.45e8 4.57e8 4.70e8 4.82e8 4.96e8 5.09e8
+ 3 AFG     1.95e7 1.97e7 2.10e7 2.26e7 2.36e7 2.44e7 2.54e7 2.59e7 2.64e7 2.74e7
+ 4 AFW     2.70e8 2.77e8 2.85e8 2.93e8 3.01e8 3.10e8 3.19e8 3.28e8 3.37e8 3.46e8
+ 5 AGO     1.64e7 1.69e7 1.75e7 1.81e7 1.88e7 1.95e7 2.02e7 2.09e7 2.17e7 2.25e7
+ 6 ALB     3.09e6 3.06e6 3.05e6 3.04e6 3.03e6 3.01e6 2.99e6 2.97e6 2.95e6 2.93e6
+ 7 AND     6.61e4 6.78e4 7.08e4 7.39e4 7.69e4 7.98e4 8.02e4 7.82e4 7.61e4 7.39e4
+ 8 ARB     2.87e8 2.94e8 3.00e8 3.07e8 3.13e8 3.21e8 3.29e8 3.37e8 3.47e8 3.56e8
+ 9 ARE     3.28e6 3.45e6 3.63e6 3.81e6 3.99e6 4.28e6 4.90e6 5.87e6 6.99e6 7.99e6
+10 ARG     3.71e7 3.75e7 3.79e7 3.83e7 3.87e7 3.91e7 3.95e7 3.99e7 4.03e7 4.07e7
+# ℹ 256 more rows
+# ℹ 8 more variables: `2010` &lt;dbl&gt;, `2011` &lt;dbl&gt;, `2012` &lt;dbl&gt;, `2013` &lt;dbl&gt;,
+#   `2014` &lt;dbl&gt;, `2015` &lt;dbl&gt;, `2016` &lt;dbl&gt;, `2017` &lt;dbl&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="컬럼의-결합-및-분할" class="level3" data-number="3.2">
+<h3 data-number="3.2" class="anchored" data-anchor-id="컬럼의-결합-및-분할"><span class="header-section-number">3.2</span> 컬럼의 결합 및 분할</h3>
+<section id="컬럼-결합하기" class="level4" data-number="3.2.1">
+<h4 data-number="3.2.1" class="anchored" data-anchor-id="컬럼-결합하기"><span class="header-section-number">3.2.1</span> 컬럼 결합하기</h4>
+<p>두 개 이상의 컬럼을 연합하여 하나의 새로운 컬럼을 생성한다. 우선 간단한 예제 티블 객체를 생성한다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a>b_tibble <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">country =</span> <span class="fu">c</span>(<span class="st">"A"</span>, <span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"B"</span>),</span>
+<span id="cb70-3"><a href="#cb70-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">century =</span> <span class="fu">c</span>(<span class="st">"19"</span>, <span class="st">"20"</span>, <span class="st">"19"</span>, <span class="st">"20"</span>),</span>
+<span id="cb70-4"><a href="#cb70-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">year =</span> <span class="fu">c</span>(<span class="st">"99"</span>, <span class="st">"00"</span>, <span class="st">"99"</span>, <span class="st">"00"</span>)</span>
+<span id="cb70-5"><a href="#cb70-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb70-6"><a href="#cb70-6" aria-hidden="true" tabindex="-1"></a>b_tibble</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 3
+  country century year 
+  &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;
+1 A       19      99   
+2 A       20      00   
+3 B       19      99   
+4 B       20      00   </code></pre>
+</div>
+</div>
+<p><code>century</code>와 <code>year</code> 컬럼을 결합하여 새로운 컬럼을 생성한다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a>b_tibble <span class="sc">|&gt;</span> <span class="fu">unite</span>(century, year, <span class="at">col =</span> <span class="st">"year"</span>, <span class="at">sep =</span> <span class="st">""</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 2
+  country year 
+  &lt;chr&gt;   &lt;chr&gt;
+1 A       1999 
+2 A       2000 
+3 B       1999 
+4 B       2000 </code></pre>
+</div>
+</div>
+</section>
+<section id="컬럼-분할하기" class="level4" data-number="3.2.2">
+<h4 data-number="3.2.2" class="anchored" data-anchor-id="컬럼-분할하기"><span class="header-section-number">3.2.2</span> 컬럼 분할하기</h4>
+<p>하나의 컬럼을 두 개 이상의 컬럼으로 분할한다. 우선 간단한 예제 티블 객체를 생성한다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a>c_tibble <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb74-2"><a href="#cb74-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">country =</span> <span class="fu">c</span>(<span class="st">"A"</span>, <span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"B"</span>),</span>
+<span id="cb74-3"><a href="#cb74-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">year =</span> <span class="fu">c</span>(<span class="st">"1999"</span>, <span class="st">"2000"</span>, <span class="st">"1999"</span>, <span class="st">"2000"</span>),</span>
+<span id="cb74-4"><a href="#cb74-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">rate =</span> <span class="fu">c</span>(<span class="st">"0.7K/19M"</span>, <span class="st">"2K/20M"</span>, <span class="st">"37K/172M"</span>, <span class="st">"80K/174M"</span>)</span>
+<span id="cb74-5"><a href="#cb74-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb74-6"><a href="#cb74-6" aria-hidden="true" tabindex="-1"></a>c_tibble</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 3
+  country year  rate    
+  &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;   
+1 A       1999  0.7K/19M
+2 A       2000  2K/20M  
+3 B       1999  37K/172M
+4 B       2000  80K/174M</code></pre>
+</div>
+</div>
+<p><code>rate</code> 컬럼을 분할하여 새로운 두 개의 컬럼을 생성한다. 컬럼이 늘어 나는 것이므로 <code>separate_wider_delim()</code> 함수를 통해 수행한다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb76"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a>c_tibble <span class="sc">|&gt;</span> <span class="fu">separate_wider_delim</span>(</span>
+<span id="cb76-2"><a href="#cb76-2" aria-hidden="true" tabindex="-1"></a>  rate, <span class="at">delim =</span> <span class="st">"/"</span>, <span class="at">names =</span> <span class="fu">c</span>(<span class="st">"cases"</span>, <span class="st">"pop"</span>) </span>
+<span id="cb76-3"><a href="#cb76-3" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 4
+  country year  cases pop  
+  &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;
+1 A       1999  0.7K  19M  
+2 A       2000  2K    20M  
+3 B       1999  37K   172M 
+4 B       2000  80K   174M </code></pre>
+</div>
+</div>
+<p>유사한 기능을 하는 파생 함수에 <code>separate_wider_position()</code>과 <code>separate_wider_regex()</code> 함수도 있다.</p>
+<p>하나의 셀 속의 값을 분할하는 것은 위와 동일하지만, 분할된 값을 새로운 컬럼으로 옮기는 방식이 아니라 동일한 행의 새로운 열로 옮기는 방식 역시 가능한다. 행을 늘이기 때문에 <code>separate_longer_delim()</code> 함수를 사용한다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb78"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a>c_tibble <span class="sc">|&gt;</span> <span class="fu">separate_longer_delim</span>(</span>
+<span id="cb78-2"><a href="#cb78-2" aria-hidden="true" tabindex="-1"></a>  rate, <span class="at">delim =</span> <span class="st">"/"</span></span>
+<span id="cb78-3"><a href="#cb78-3" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 8 × 3
+  country year  rate 
+  &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;
+1 A       1999  0.7K 
+2 A       1999  19M  
+3 A       2000  2K   
+4 A       2000  20M  
+5 B       1999  37K  
+6 B       1999  172M 
+7 B       2000  80K  
+8 B       2000  174M </code></pre>
+</div>
+</div>
+<p>유사한 기능을 하는 파생 함수에 <code>separate_longer_position()</code> 함수도 있다.</p>
+</section>
+</section>
+<section id="결측치na-처리" class="level3" data-number="3.3">
+<h3 data-number="3.3" class="anchored" data-anchor-id="결측치na-처리"><span class="header-section-number">3.3</span> 결측치(NA) 처리</h3>
+<p>해당 셀에 데이터가 존재하지 않는 경우 그것을 결측치(missing value)라 하고, R에서는 보통 NA(Not Available)이라고 한다. <a href="https://tidyr.tidyverse.org/"><strong>tidyr</strong></a> 패키지는 이러한 결측치를 다루기 위한 몇 가지 유용한 함수를 제공한다. 우선 간단한 예제 티블 객체를 생성한다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb80"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a>d_tibble <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb80-2"><a href="#cb80-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">x1 =</span> <span class="fu">c</span>(<span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"C"</span>, <span class="st">"D"</span>, <span class="st">"E"</span>), </span>
+<span id="cb80-3"><a href="#cb80-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">x2 =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="cn">NA</span>, <span class="cn">NA</span>, <span class="dv">3</span>, <span class="dv">4</span>),</span>
+<span id="cb80-4"><a href="#cb80-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">x3 =</span> <span class="fu">c</span>(<span class="cn">NA</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span>, <span class="cn">NA</span>, <span class="cn">FALSE</span>)</span>
+<span id="cb80-5"><a href="#cb80-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb80-6"><a href="#cb80-6" aria-hidden="true" tabindex="-1"></a>d_tibble</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 3
+  x1       x2 x3   
+  &lt;chr&gt; &lt;dbl&gt; &lt;lgl&gt;
+1 A         1 NA   
+2 B        NA TRUE 
+3 C        NA FALSE
+4 D         3 NA   
+5 E         4 FALSE</code></pre>
+</div>
+</div>
+<section id="결측치를-포함한-행-삭제하기" class="level4" data-number="3.3.1">
+<h4 data-number="3.3.1" class="anchored" data-anchor-id="결측치를-포함한-행-삭제하기"><span class="header-section-number">3.3.1</span> 결측치를 포함한 행 삭제하기</h4>
+<p><code>drop_na()</code> 함수를 통해 결측치가 포함된 행을 삭제할 수 있다. 우선 어떤 컬럼에서라도 NA를 가지는 모든 행을 삭제한다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb82"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a>d_tibble <span class="sc">|&gt;</span> <span class="fu">drop_na</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 3
+  x1       x2 x3   
+  &lt;chr&gt; &lt;dbl&gt; &lt;lgl&gt;
+1 E         4 FALSE</code></pre>
+</div>
+</div>
+<p>특정한 컬럼에 NA를 가지는 행만 삭제할 수 있다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb84"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a>d_tibble <span class="sc">|&gt;</span> <span class="fu">drop_na</span>(x2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 3
+  x1       x2 x3   
+  &lt;chr&gt; &lt;dbl&gt; &lt;lgl&gt;
+1 A         1 NA   
+2 D         3 NA   
+3 E         4 FALSE</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb86"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a>d_tibble <span class="sc">|&gt;</span> <span class="fu">drop_na</span>(x3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 3
+  x1       x2 x3   
+  &lt;chr&gt; &lt;dbl&gt; &lt;lgl&gt;
+1 B        NA TRUE 
+2 C        NA FALSE
+3 E         4 FALSE</code></pre>
+</div>
+</div>
+</section>
+<section id="결측치를-주변-값을-이용해-채워넣기" class="level4" data-number="3.3.2">
+<h4 data-number="3.3.2" class="anchored" data-anchor-id="결측치를-주변-값을-이용해-채워넣기"><span class="header-section-number">3.3.2</span> 결측치를 주변 값을 이용해 채워넣기</h4>
+<p><code>fill()</code> 함수는 위나 아래의 값을 이용해 NA를 대체하는 것이다. 방향의 “down”은 기본값으로 위의 값을 기준으로 아래 방향으로 채움이 이루어진다는 것이다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb88"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a>d_tibble <span class="sc">|&gt;</span> <span class="fu">fill</span>(x2, <span class="at">.direction =</span> <span class="st">"down"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 3
+  x1       x2 x3   
+  &lt;chr&gt; &lt;dbl&gt; &lt;lgl&gt;
+1 A         1 NA   
+2 B         1 TRUE 
+3 C         1 FALSE
+4 D         3 NA   
+5 E         4 FALSE</code></pre>
+</div>
+</div>
+<p>방향을 다르게 지정할 수도 있다. “up”은 아래의 값을 기준으로 위 방향으로 채움이 이루어진다는 것이다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb90"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a>d_tibble <span class="sc">|&gt;</span> <span class="fu">fill</span>(x2, <span class="at">.direction =</span> <span class="st">"up"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 3
+  x1       x2 x3   
+  &lt;chr&gt; &lt;dbl&gt; &lt;lgl&gt;
+1 A         1 NA   
+2 B         3 TRUE 
+3 C         3 FALSE
+4 D         3 NA   
+5 E         4 FALSE</code></pre>
+</div>
+</div>
+<p>이렇게 하면 아래에 참조할 것이 없는 다섯 번째 행의 값은 그대로 NA로 남게 된다. 이를 해소하기 위해 “updown”으로 설정할 수 있는데, 먼저 위 방향으로 채움이 이루어지고 NA가 여전히 존재하는 경우 아래 방향의 채움이 이루어진다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb92"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb92-1"><a href="#cb92-1" aria-hidden="true" tabindex="-1"></a>d_tibble <span class="sc">|&gt;</span> <span class="fu">fill</span>(x2, <span class="at">.direction =</span> <span class="st">"updown"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 3
+  x1       x2 x3   
+  &lt;chr&gt; &lt;dbl&gt; &lt;lgl&gt;
+1 A         1 NA   
+2 B         3 TRUE 
+3 C         3 FALSE
+4 D         3 NA   
+5 E         4 FALSE</code></pre>
+</div>
+</div>
+</section>
+<section id="결측치를-특정-값으로-채워넣기" class="level4" data-number="3.3.3">
+<h4 data-number="3.3.3" class="anchored" data-anchor-id="결측치를-특정-값으로-채워넣기"><span class="header-section-number">3.3.3</span> 결측치를 특정 값으로 채워넣기</h4>
+<p><code>raplace_na()</code> 함수를 통해 특정 값을 지정해 NA를 대체할 수 있다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb94"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb94-1"><a href="#cb94-1" aria-hidden="true" tabindex="-1"></a>d_tibble <span class="sc">|&gt;</span> <span class="fu">replace_na</span>(</span>
+<span id="cb94-2"><a href="#cb94-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">x2 =</span> <span class="dv">0</span>, <span class="at">x3 =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb94-3"><a href="#cb94-3" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 3
+  x1       x2 x3   
+  &lt;chr&gt; &lt;dbl&gt; &lt;lgl&gt;
+1 A         1 TRUE 
+2 B         0 TRUE 
+3 C         0 FALSE
+4 D         3 TRUE 
+5 E         4 FALSE</code></pre>
+</div>
+</div>
+</section>
+<section id="암묵적-결측치-처리" class="level4" data-number="3.3.4">
+<h4 data-number="3.3.4" class="anchored" data-anchor-id="암묵적-결측치-처리"><span class="header-section-number">3.3.4</span> 암묵적 결측치 처리</h4>
+<p>암묵적(implicit) 결측치란 데이터셋에 아예 존재하지 않아 기록되지 않은 결측치를 말하는데, 행의 부재 형태로 나타난다. 예시를 위해 간단한 티블 객체를 생성한다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb96"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb96-1"><a href="#cb96-1" aria-hidden="true" tabindex="-1"></a>e_tibble <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb96-2"><a href="#cb96-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">x1 =</span> <span class="fu">c</span>(<span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"B"</span>), </span>
+<span id="cb96-3"><a href="#cb96-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">x2 =</span> <span class="fu">c</span>(<span class="st">"X"</span>, <span class="st">"X"</span>, <span class="st">"Y"</span>),</span>
+<span id="cb96-4"><a href="#cb96-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">x3 =</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>)</span>
+<span id="cb96-5"><a href="#cb96-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb96-6"><a href="#cb96-6" aria-hidden="true" tabindex="-1"></a>e_tibble</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 3
+  x1    x2       x3
+  &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt;
+1 A     X         3
+2 B     X         4
+3 B     Y         5</code></pre>
+</div>
+</div>
+<p>여기서 x1과 x2는 범주형 변수이고, 모두 4가지(A-X, A-Y, B-X, B-Y)이 가능하다. 하지만 현재 데이터셋에는 A-Y가 존재하지 않는데, 이 때 이것을 암묵적 결측치라고 부른다. 암묵적 결측치를 명시적 결측치로 만드는 것이 필요한 상황이 있을 수 있는데, <code>complete()</code> 함수를 통해 암묵적 결측치를 확인할 수 있다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb98"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb98-1"><a href="#cb98-1" aria-hidden="true" tabindex="-1"></a>e_tibble <span class="sc">|&gt;</span> <span class="fu">complete</span>(x1, x2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 3
+  x1    x2       x3
+  &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt;
+1 A     X         3
+2 A     Y        NA
+3 B     X         4
+4 B     Y         5</code></pre>
+</div>
+</div>
+<p>A-Y에 대한 x3의 셀의 NA로 나타나는 것을 확인할 수 있다. 앞의 <code>fill()</code> 함수와 유사한 방식으로 해당 결측치를 채울수도 있다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb100"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb100-1"><a href="#cb100-1" aria-hidden="true" tabindex="-1"></a>e_tibble <span class="sc">|&gt;</span> <span class="fu">complete</span>(x1, x2, <span class="at">fill =</span> <span class="fu">list</span>(<span class="at">x3 =</span> <span class="dv">0</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 3
+  x1    x2       x3
+  &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt;
+1 A     X         3
+2 A     Y         0
+3 B     X         4
+4 B     Y         5</code></pre>
+</div>
+</div>
+<p>암묵적 결측치의 확인이 목적이 아니라 모든 카테고리의 조합 상황을 확인하고 싶을 때는 <code>expand()</code> 함수를 사용한다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb102"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb102-1"><a href="#cb102-1" aria-hidden="true" tabindex="-1"></a>e_tibble <span class="sc">|&gt;</span> <span class="fu">expand</span>(x1, x2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 2
+  x1    x2   
+  &lt;chr&gt; &lt;chr&gt;
+1 A     X    
+2 A     Y    
+3 B     X    
+4 B     Y    </code></pre>
+</div>
+</div>
+</section>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
+
+
+
+
+</body></html>
